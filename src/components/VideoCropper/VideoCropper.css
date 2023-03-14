@@ -1,0 +1,61 @@
+.video-cropper {
+  padding: 40px 0px;
+}
+
+.video-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.video {
+  width: 1280px;
+  height: 720px;
+}
+
+.video-size-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.input-item {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.controller {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+.progress {
+  width: 1280px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 1280px;
+}
+
+.play-button {
+  width: 60px;
+  margin-right: 20px;
+}
+
+.times {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+}
