@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import './VideoTrimmer.css';
 
@@ -20,6 +20,7 @@ const validateAndTimes = (name: string, value: string): string => {
   }
   return value;
 };
+
 const getTimeDiffInSeconds = (trimmedVideoDuration: TrimmedVideoDuration): number => {
   const { startHour, startMin, startSec, endHour, endMin, endSec } = trimmedVideoDuration;
   const startSeconds =
@@ -30,7 +31,8 @@ const getTimeDiffInSeconds = (trimmedVideoDuration: TrimmedVideoDuration): numbe
     parseInt(String(endHour || 0)) * 3600 +
     parseInt(String(endMin || 0)) * 60 +
     parseInt(String(endSec || 0));
-  return Math.abs(endSeconds - startSeconds);
+
+  return endSeconds - startSeconds;
 };
 
 // TODO: class로 빼기
@@ -38,6 +40,10 @@ const ffmpeg = createFFmpeg({
   log: true,
   progress: (p) => console.log(p),
 });
+
+const loadFFMPEG = async () => {
+  await ffmpeg.load();
+};
 
 const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: string }) => {
   const [videoSrc, setVideoSrc] = useState('');
@@ -51,9 +57,17 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
     endSec: '',
   });
 
+  useEffect(() => {
+    loadFFMPEG();
+  }, []);
+
   const doTranscode = async () => {
-    setMessage('Loading ffmpeg-core.js');
-    await ffmpeg.load();
+    const duration = getTimeDiffInSeconds(trimmedVideoDuration);
+
+    if (duration < 0) {
+      setMessage('종료 시간이 시작 시간보다 작습니다.');
+    }
+
     setMessage('Start transcoding');
     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(video as File));
 
@@ -65,7 +79,7 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
       '-i',
       'input.mp4',
       '-t',
-      String(getTimeDiffInSeconds(trimmedVideoDuration)),
+      String(duration),
       '-c',
       'copy',
       'output.mp4'
