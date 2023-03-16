@@ -36,7 +36,6 @@ function App() {
 
   return (
     <div className='App'>
-      <div>{`crosOriginIsolated: ${self.crossOriginIsolated}`}</div>
       <input className='file-input' type='file' onChange={onChangeVideo} accept='video/*' />
       <section className='tab-view'>
         {tabs.map((tab) => (
