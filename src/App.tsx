@@ -25,6 +25,8 @@ const tabViews: { id: TabIdTypes; component: (props: any) => JSX.Element }[] = [
   { id: TabIds.VIDEO_TRIMMER, component: (props: any) => <VideoTrimmer {...props} /> },
 ];
 
+//* vercel header 설정 체크
+
 function App() {
   const [video, setVideo] = useState<File | null>(null);
   const [tabId, setTabId] = useState<TabIdTypes>(TabIds.VIDEO_CROPPER);
