@@ -64,8 +64,9 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
   const doTranscode = async () => {
     const duration = getTimeDiffInSeconds(trimmedVideoDuration);
 
-    if (duration < 0) {
+    if (Number(duration) < 0) {
       setMessage('종료 시간이 시작 시간보다 작습니다.');
+      return;
     }
 
     setMessage('Start transcoding');
