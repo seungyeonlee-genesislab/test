@@ -2,24 +2,13 @@ import { useRef, useState } from 'react';
 import * as cv from '@techstark/opencv-js';
 import ReactCrop, { Crop } from 'react-image-crop';
 import { useVideoStatus } from './hooks';
+import { secondsToTime } from 'utils';
 import 'react-image-crop/dist/ReactCrop.css';
 import './VideoCropper.css';
 
 const DEFAULT_WIDTH_PER_HEIGHT_RATIO = 9 / 12;
 const DEFAULT_HEIGHT = 720;
 const DEFUALT_WIDTH = DEFAULT_HEIGHT * DEFAULT_WIDTH_PER_HEIGHT_RATIO;
-
-const secondsToTime = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
-
-  const formattedHours = hours.toString().padStart(2, '0');
-  const formattedMinutes = minutes.toString().padStart(2, '0');
-  const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
-
-  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-};
 
 const VideoCropper = ({ video, videoUrl }: { video: File | null; videoUrl: string }) => {
   const [crop, setCrop] = useState<Crop>({
@@ -120,7 +109,6 @@ const VideoCropper = ({ video, videoUrl }: { video: File | null; videoUrl: strin
               src={videoUrl}
               onTimeUpdate={handleTimeUpdateOriginalVideo}
               onLoadedMetadata={handleLoadedMetadataOriginalVideo}
-              // autoPlay
               crossOrigin=''
             />
           </ReactCrop>

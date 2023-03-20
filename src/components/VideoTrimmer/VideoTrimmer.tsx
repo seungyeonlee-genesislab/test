@@ -1,51 +1,16 @@
 import { useEffect, useState } from 'react';
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+import { fetchFile } from '@ffmpeg/ffmpeg';
+import {
+  TrimmedVideoDuration,
+  validateTimeByName,
+  getTimeDiffInSeconds,
+  ffmpegModule,
+} from 'utils';
 import './VideoTrimmer.css';
 
-interface TrimmedVideoDuration {
-  startHour: number | '';
-  startMin: number | '';
-  startSec: number | '';
-  endHour: number | '';
-  endMin: number | '';
-  endSec: number | '';
-}
-
-const validateAndTimes = (name: string, value: string): string => {
-  const nameRegex = /(Min|Sec)/;
-  const valueRegex = /^([0-5]?\d)$/;
-
-  if (nameRegex.test(name)) {
-    return valueRegex.test(value) ? value : '0';
-  }
-  return value;
-};
-
-const getTimeDiffInSeconds = (trimmedVideoDuration: TrimmedVideoDuration): number => {
-  const { startHour, startMin, startSec, endHour, endMin, endSec } = trimmedVideoDuration;
-  const startSeconds =
-    parseInt(String(startHour || 0)) * 3600 +
-    parseInt(String(startMin || 0)) * 60 +
-    parseInt(String(startSec || 0));
-  const endSeconds =
-    parseInt(String(endHour || 0)) * 3600 +
-    parseInt(String(endMin || 0)) * 60 +
-    parseInt(String(endSec || 0));
-
-  return endSeconds - startSeconds;
-};
-
-// TODO: class로 빼기
-const ffmpeg = createFFmpeg({
-  log: true,
-  progress: (p) => console.log(p),
-});
-
-const loadFFMPEG = async () => {
-  await ffmpeg.load();
-};
-
 const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: string }) => {
+  const { ffmpeg } = ffmpegModule;
+
   const [videoSrc, setVideoSrc] = useState('');
   const [message, setMessage] = useState('Click Start to transcode');
   const [trimmedVideoDuration, setTrimmedVideoDuration] = useState<TrimmedVideoDuration>({
@@ -58,7 +23,7 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
   });
 
   useEffect(() => {
-    loadFFMPEG();
+    ffmpegModule.load();
   }, []);
 
   const doTranscode = async () => {
@@ -94,7 +59,10 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
     const name = e.target.name;
     const value = e.target.value;
 
-    setTrimmedVideoDuration((prev) => ({ ...prev, [name]: Number(validateAndTimes(name, value)) }));
+    setTrimmedVideoDuration((prev) => ({
+      ...prev,
+      [name]: Number(validateTimeByName(name, value)),
+    }));
   };
 
   return (
