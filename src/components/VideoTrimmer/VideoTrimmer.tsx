@@ -23,7 +23,9 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
   });
 
   useEffect(() => {
-    ffmpegModule.load();
+    if (!ffmpeg.isLoaded) {
+      ffmpegModule.load();
+    }
 
     return () => ffmpeg.exit();
   }, [ffmpeg]);
