@@ -24,7 +24,9 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
 
   useEffect(() => {
     ffmpegModule.load();
-  }, []);
+
+    return () => ffmpeg.exit();
+  }, [ffmpeg]);
 
   const doTranscode = async () => {
     const duration = getTimeDiffInSeconds(trimmedVideoDuration);
