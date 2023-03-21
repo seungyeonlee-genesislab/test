@@ -38,6 +38,7 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
       return;
     }
 
+    console.time('task');
     setMessage('Start transcoding');
     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(video as File));
 
@@ -57,6 +58,7 @@ const VideoTrimmer = ({ video, videoUrl }: { video: File | null; videoUrl: strin
     setMessage('Complete transcoding');
     const data = ffmpeg.FS('readFile', 'output.mp4');
     setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' })));
+    console.time('task');
   };
 
   const onChangeDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
